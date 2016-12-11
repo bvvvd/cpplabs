@@ -4,13 +4,10 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
-#include <cstring>
 
 using namespace std;
 
-int sizeOfNumbers(){
+int amountOfNumbers(){
     int numberCount = -1;
     ifstream input;
     input.open("/home/valeriy/find_max.dat");
@@ -26,8 +23,8 @@ int sizeOfNumbers(){
 int main(){
     
     
-    int numbers = sizeOfNumbers();
-    int numberOfProcesses = 10;
+    int numbers = amountOfNumbers();
+    int numberOfProcesses = 5;
     int workload = numbers / numberOfProcesses;
     int pipedes[numberOfProcesses][2];
     double final[numberOfProcesses];
@@ -60,11 +57,12 @@ int main(){
                 in>>number;
                 maxNumber = maxNumber < number ? number : maxNumber;
             }
-            if (numberOfCurrentProcess == 0){
-                in>>number;
-                in>>number;
-                maxNumber = maxNumber < number ? number : maxNumber;
-            }
+            if (numberOfCurrentProcess == numberOfProcesses - 1)
+                for (int i = 0; i < numbers % numberOfProcesses; i++){
+                    in>>number;
+                    in>>number;
+                    maxNumber = maxNumber < number ? number : maxNumber;
+                }
             
             close(pipedes[numberOfCurrentProcess][0]);
             write(pipedes[numberOfCurrentProcess][1], &maxNumber, sizeof(double));
@@ -84,10 +82,7 @@ int main(){
     double maxNumber = final[0];
     for (int i = 0; i < numberOfProcesses; i++){
         maxNumber = maxNumber < final[i] ? final[i] : maxNumber;
-        //cout<<final[i]<<endl;
     }
-    
-    //cout<<sizeof(final)/sizeof(double);
     
     cout<<"Max number is "<<maxNumber<<endl;
     
