@@ -1,2 +1,6 @@
-/pipe1/build/
-/pipe1/dist/
+build/
+dist/
+nbproject/
+Makefile
+.dep/
+*.out
